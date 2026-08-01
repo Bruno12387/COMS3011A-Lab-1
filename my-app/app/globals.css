@@ -464,3 +464,56 @@ details.archived .task-list {
     margin-top: 12px;
   }
 }
+ 
+/* ---------- form validation ---------- */
+ 
+.field-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--overdue);
+}
+ 
+.form-error {
+  margin: 14px 0 0;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--overdue-bg);
+  border: 1px solid var(--overdue-border);
+  color: var(--overdue);
+  font-size: 13px;
+}
+ 
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--overdue);
+}
+ 
+input[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus {
+  outline-color: var(--overdue);
+}
+ 
+/* ---------- status as a read-only chip ---------- */
+ 
+.chip-status {
+  font-weight: 600;
+}
+ 
+/* ---------- disabled controls (features not yet wired up) ---------- */
+ 
+.btn:disabled,
+.btn-archive:disabled,
+.toolbar select:disabled,
+.toolbar input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+ 
+.btn:disabled:hover,
+.btn-archive:disabled:hover {
+  background: none;
+}
+ 
+.btn-primary:disabled:hover {
+  background: var(--accent);
+}
