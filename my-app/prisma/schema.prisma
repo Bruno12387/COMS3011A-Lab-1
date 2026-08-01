@@ -11,8 +11,23 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
+enum Status {
+  TODO
+  IN_PROGRESS
+  COMPLETE
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime
+  topic       String
+  status      Status   @default(TODO)
+  archived    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([archived, status])
+  @@index([dueDate])
 }

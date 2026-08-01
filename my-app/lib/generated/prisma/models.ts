@@ -8,5 +8,5 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Post'
+export type * from './models/Task'
 export type * from './commonInputTypes'
