@@ -75,8 +75,7 @@ export const TaskScalarFieldEnum = {
   topic: 'topic',
   status: 'status',
   archived: 'archived',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  createdAt: 'createdAt'
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]

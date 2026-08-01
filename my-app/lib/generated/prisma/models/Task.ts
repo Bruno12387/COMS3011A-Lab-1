@@ -43,7 +43,6 @@ export type TaskMinAggregateOutputType = {
   status: $Enums.Status | null
   archived: boolean | null
   createdAt: Date | null
-  updatedAt: Date | null
 }
 
 export type TaskMaxAggregateOutputType = {
@@ -55,7 +54,6 @@ export type TaskMaxAggregateOutputType = {
   status: $Enums.Status | null
   archived: boolean | null
   createdAt: Date | null
-  updatedAt: Date | null
 }
 
 export type TaskCountAggregateOutputType = {
@@ -67,7 +65,6 @@ export type TaskCountAggregateOutputType = {
   status: number
   archived: number
   createdAt: number
-  updatedAt: number
   _all: number
 }
 
@@ -89,7 +86,6 @@ export type TaskMinAggregateInputType = {
   status?: true
   archived?: true
   createdAt?: true
-  updatedAt?: true
 }
 
 export type TaskMaxAggregateInputType = {
@@ -101,7 +97,6 @@ export type TaskMaxAggregateInputType = {
   status?: true
   archived?: true
   createdAt?: true
-  updatedAt?: true
 }
 
 export type TaskCountAggregateInputType = {
@@ -113,7 +108,6 @@ export type TaskCountAggregateInputType = {
   status?: true
   archived?: true
   createdAt?: true
-  updatedAt?: true
   _all?: true
 }
 
@@ -212,7 +206,6 @@ export type TaskGroupByOutputType = {
   status: $Enums.Status
   archived: boolean
   createdAt: Date
-  updatedAt: Date
   _count: TaskCountAggregateOutputType | null
   _avg: TaskAvgAggregateOutputType | null
   _sum: TaskSumAggregateOutputType | null
@@ -247,7 +240,6 @@ export type TaskWhereInput = {
   status?: Prisma.EnumStatusFilter<"Task"> | $Enums.Status
   archived?: Prisma.BoolFilter<"Task"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
 }
 
 export type TaskOrderByWithRelationInput = {
@@ -259,7 +251,6 @@ export type TaskOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   archived?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -274,7 +265,6 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumStatusFilter<"Task"> | $Enums.Status
   archived?: Prisma.BoolFilter<"Task"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
 }, "id">
 
 export type TaskOrderByWithAggregationInput = {
@@ -286,7 +276,6 @@ export type TaskOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   archived?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   _count?: Prisma.TaskCountOrderByAggregateInput
   _avg?: Prisma.TaskAvgOrderByAggregateInput
   _max?: Prisma.TaskMaxOrderByAggregateInput
@@ -306,7 +295,6 @@ export type TaskScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumStatusWithAggregatesFilter<"Task"> | $Enums.Status
   archived?: Prisma.BoolWithAggregatesFilter<"Task"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
-  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
 }
 
 export type TaskCreateInput = {
@@ -317,7 +305,6 @@ export type TaskCreateInput = {
   status?: $Enums.Status
   archived?: boolean
   createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type TaskUncheckedCreateInput = {
@@ -329,7 +316,6 @@ export type TaskUncheckedCreateInput = {
   status?: $Enums.Status
   archived?: boolean
   createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type TaskUpdateInput = {
@@ -340,7 +326,6 @@ export type TaskUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TaskUncheckedUpdateInput = {
@@ -352,7 +337,6 @@ export type TaskUncheckedUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TaskCreateManyInput = {
@@ -364,7 +348,6 @@ export type TaskCreateManyInput = {
   status?: $Enums.Status
   archived?: boolean
   createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type TaskUpdateManyMutationInput = {
@@ -375,7 +358,6 @@ export type TaskUpdateManyMutationInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TaskUncheckedUpdateManyInput = {
@@ -387,7 +369,6 @@ export type TaskUncheckedUpdateManyInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TaskCountOrderByAggregateInput = {
@@ -399,7 +380,6 @@ export type TaskCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   archived?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskAvgOrderByAggregateInput = {
@@ -415,7 +395,6 @@ export type TaskMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   archived?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskMinOrderByAggregateInput = {
@@ -427,7 +406,6 @@ export type TaskMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   archived?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskSumOrderByAggregateInput = {
@@ -473,7 +451,6 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   status?: boolean
   archived?: boolean
   createdAt?: boolean
-  updatedAt?: boolean
 }, ExtArgs["result"]["task"]>
 
 export type TaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -485,7 +462,6 @@ export type TaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   archived?: boolean
   createdAt?: boolean
-  updatedAt?: boolean
 }, ExtArgs["result"]["task"]>
 
 export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -497,7 +473,6 @@ export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   archived?: boolean
   createdAt?: boolean
-  updatedAt?: boolean
 }, ExtArgs["result"]["task"]>
 
 export type TaskSelectScalar = {
@@ -509,10 +484,9 @@ export type TaskSelectScalar = {
   status?: boolean
   archived?: boolean
   createdAt?: boolean
-  updatedAt?: boolean
 }
 
-export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "dueDate" | "topic" | "status" | "archived" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "dueDate" | "topic" | "status" | "archived" | "createdAt", ExtArgs["result"]["task"]>
 
 export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Task"
@@ -526,7 +500,6 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     status: $Enums.Status
     archived: boolean
     createdAt: Date
-    updatedAt: Date
   }, ExtArgs["result"]["task"]>
   composites: {}
 }
@@ -958,7 +931,6 @@ export interface TaskFieldRefs {
   readonly status: Prisma.FieldRef<"Task", 'Status'>
   readonly archived: Prisma.FieldRef<"Task", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Task", 'DateTime'>
-  readonly updatedAt: Prisma.FieldRef<"Task", 'DateTime'>
 }
     
 

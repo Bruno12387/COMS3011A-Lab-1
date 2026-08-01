@@ -1,26 +1,466 @@
-@import "tailwindcss";
-
+/* app/globals.css
+ *
+ * Replace the contents of the globals.css that create-next-app generated with
+ * this file. Its default body/:root rules will fight the ones below if you
+ * merely append.
+ *
+ * Already imported by app/layout.tsx — no extra wiring needed.
+ */
+ 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --border: #e2e5ea;
+  --border-strong: #cbd1da;
+  --text: #1c2024;
+  --text-muted: #6b7280;
+  --accent: #2f6feb;
+  --accent-soft: #eaf1fe;
+ 
+  --overdue: #c0392b;
+  --overdue-bg: #fdf2f1;
+  --overdue-border: #f0c2bc;
+ 
+  --todo-bg: #eef0f3;
+  --todo-fg: #4b5563;
+  --progress-bg: #fff4e0;
+  --progress-fg: #9a6206;
+  --complete-bg: #e8f6ed;
+  --complete-fg: #1f7a41;
+ 
+  --radius: 10px;
+  --radius-sm: 6px;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+ 
+* {
+  box-sizing: border-box;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+ 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 32px 20px 80px;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+ 
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+}
+ 
+/* ---------- header ---------- */
+ 
+.page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+ 
+h1 {
+  font-size: 26px;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+ 
+.count {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+ 
+h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+ 
+/* ---------- panels ---------- */
+ 
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+ 
+/* ---------- create form ---------- */
+ 
+.create-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+}
+ 
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+ 
+.field.wide {
+  grid-column: 1 / -1;
+}
+ 
+label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+ 
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  width: 100%;
+}
+ 
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+ 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+ 
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+ 
+.btn {
+  font: inherit;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+ 
+.btn:hover {
+  background: #f0f2f5;
+}
+ 
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+ 
+.btn-primary:hover {
+  background: #2560d4;
+}
+ 
+.hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+ 
+/* ---------- sort toolbar ---------- */
+ 
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+ 
+.toolbar label {
+  font-size: 13px;
+  font-weight: 500;
+}
+ 
+.toolbar select {
+  width: auto;
+  padding: 6px 10px;
+}
+ 
+.toolbar .spacer {
+  flex: 1;
+}
+ 
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+ 
+/* ---------- task rows ---------- */
+ 
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ 
+.task {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+}
+ 
+.task.is-overdue {
+  background: var(--overdue-bg);
+  border-color: var(--overdue-border);
+  border-left-color: var(--overdue);
+}
+ 
+.task-main {
+  min-width: 0;
+}
+ 
+.task-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 3px;
+  display: inline-block;
+}
+ 
+.task-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+ 
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+ 
+.task-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+ 
+/* ---------- click-to-edit affordance ---------- */
+ 
+[contenteditable] {
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin: -1px -4px;
+  cursor: text;
+}
+ 
+[contenteditable]:hover {
+  background: #eef0f3;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+ 
+.is-overdue [contenteditable]:hover {
+  background: #f8e6e3;
+  box-shadow: inset 0 0 0 1px var(--overdue-border);
+}
+ 
+[contenteditable]:focus {
+  outline: none;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+ 
+/* ---------- chips and badges ---------- */
+ 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+ 
+.chip-topic {
+  background: var(--accent-soft);
+  color: #1e4fa8;
+}
+ 
+.chip-due {
+  background: #f0f2f5;
+  color: var(--text-muted);
+}
+ 
+.is-overdue .chip-due {
+  background: #f8e6e3;
+  color: var(--overdue);
+  font-weight: 600;
+}
+ 
+.badge-overdue {
+  background: var(--overdue);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+ 
+/* status select styled to look like a chip */
+.status-select {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 26px 4px 10px;
+  border-radius: 999px;
+  border: none;
+  width: auto;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 3l4 4 4-4' fill='none' stroke='currentColor' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+}
+ 
+.status-todo {
+  background-color: var(--todo-bg);
+  color: var(--todo-fg);
+}
+ 
+.status-progress {
+  background-color: var(--progress-bg);
+  color: var(--progress-fg);
+}
+ 
+.status-complete {
+  background-color: var(--complete-bg);
+  color: var(--complete-fg);
+}
+ 
+.btn-archive {
+  font: inherit;
+  font-size: 13px;
+  background: none;
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+ 
+.btn-archive:hover {
+  background: #f0f2f5;
+  color: var(--text);
+}
+ 
+/* ---------- archived section ---------- */
+ 
+details.archived {
+  margin-top: 32px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+ 
+details.archived summary {
+  cursor: pointer;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+ 
+details.archived summary::-webkit-details-marker {
+  display: none;
+}
+ 
+details.archived summary::before {
+  content: "▸";
+  font-size: 11px;
+  transition: transform 0.15s;
+}
+ 
+details.archived[open] summary::before {
+  transform: rotate(90deg);
+}
+ 
+details.archived .task-list {
+  margin-top: 14px;
+}
+ 
+.task.is-archived {
+  opacity: 0.65;
+  background: #fafbfc;
+  border-left-color: var(--border);
+}
+ 
+.task.is-archived .task-title {
+  text-decoration: none;
+  color: var(--text-muted);
+}
+ 
+/* ---------- empty state ---------- */
+ 
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 32px;
+  font-size: 14px;
+}
+ 
+/* ---------- mockup annotation (delete with the banner) ---------- */
+ 
+.mockup-note {
+  background: #fffbe8;
+  border: 1px solid #f0e0a8;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6b5a10;
+  margin: 0 0 24px;
+}
+ 
+@media (max-width: 620px) {
+  .create-grid {
+    grid-template-columns: 1fr;
+  }
+ 
+  .task {
+    grid-template-columns: 1fr;
+  }
+ 
+  .task-side {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
 }

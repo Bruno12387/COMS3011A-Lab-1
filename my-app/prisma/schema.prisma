@@ -26,8 +26,8 @@ model Task {
   status      Status   @default(TODO)
   archived    Boolean  @default(false)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
   @@index([archived, status])
   @@index([dueDate])
+  @@index([topic])
 }
