@@ -15,8 +15,13 @@ edited and archived, viewed as a sortable list, and are never deleted.
 | `react`, `react-dom` | Required by Next.js; provide the component model and the client-side hooks (`useActionState`, `useTransition`) used for inline editing. |
 | `@prisma/client` | Typed database client generated from the schema, so table and column names are checked at compile time rather than discovered at runtime. |
 | `@prisma/adapter-better-sqlite3` | Prisma 7 requires an explicit driver adapter for every database; this is the SQLite one. |
-| `better-sqlite3` | The actual SQLite driver the adapter wraps. Synchronous and file-backed, which suits a single-user local application. |
 | `dotenv` | Prisma 7 no longer loads `.env` automatically, so the CLI and `prisma.config.ts` need it to read `DATABASE_URL`. |
+
+`better-sqlite3` is not listed above because it is not a direct dependency — it
+is pulled in transitively by `@prisma/adapter-better-sqlite3`, which wraps it. It
+is worth naming anyway, since it is the package that actually reads and writes
+the SQLite file, it is the one native (compiled) dependency in the project, and
+it is the package referenced in the install instructions below.
 
 ### Development dependencies
 
@@ -27,10 +32,16 @@ edited and archived, viewed as a sortable list, and are never deleted.
 | `typescript`, `@types/node`, `@types/react`, `@types/react-dom` | Type checking for the project and its dependencies. |
 | `eslint`, `eslint-config-next` | Linting with the rule set Next.js ships, installed by `create-next-app`. |
 
+### Packages deliberately not added
+
 No UI component library, CSS framework, date library or validation library was
-added. Styling is hand-written CSS, dates use the built-in `Date` and
-`Intl` formatting, and validation is a few explicit checks in the Server Actions —
-each small enough that a dependency would have cost more than it saved.
+used. Styling is hand-written CSS in `app/globals.css`, dates rely on the
+built-in `Date` and `Intl` formatting, and validation is a handful of explicit
+checks in the Server Actions — each small enough that a dependency would have
+cost more than it saved.
+
+Tailwind CSS was selected during `create-next-app` before the styling approach
+was settled, and was uninstalled once it became clear nothing used it.
 
 ---
 
