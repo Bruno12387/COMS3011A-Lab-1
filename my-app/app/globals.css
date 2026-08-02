@@ -196,18 +196,6 @@ select:focus {
   padding: 6px 10px;
 }
 
-.toolbar .spacer {
-  flex: 1;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
 /* ---------- task rows ---------- */
 
 .task-list {
@@ -573,8 +561,7 @@ textarea[aria-invalid="true"]:focus {
 
 .btn:disabled,
 .btn-archive:disabled,
-.toolbar select:disabled,
-.toolbar input:disabled {
+.toolbar select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

@@ -60,14 +60,6 @@ export default function SortToolbar({ sort, dir }: Props) {
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
       </select>
-
-      <span className="spacer" />
-
-      {/* Not wired up yet. */}
-      <label className="toggle">
-        <input type="checkbox" id="overdue-only" disabled />
-        Overdue only
-      </label>
     </div>
   );
 }

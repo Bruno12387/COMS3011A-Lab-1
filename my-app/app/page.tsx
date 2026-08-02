@@ -4,7 +4,6 @@
 //
 // Implemented: creating tasks, listing them, editing every field, sorting,
 // archiving and unarchiving.
-// Still inert: the "Overdue only" filter.
 
 import { prisma } from "@/lib/prisma";
 import NewTaskForm from "./new-task-form";
