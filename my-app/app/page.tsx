@@ -2,29 +2,40 @@
 //
 // Server Component. Reads straight from Prisma — no fetch, no API route.
 //
-// Implemented: creating tasks, listing them, editing every field.
-// Still inert: the sort controls and the archive buttons.
+// Implemented: creating tasks, listing them, editing every field, sorting.
+// Still inert: the archive buttons and the "Overdue only" filter.
 
 import { prisma } from "@/lib/prisma";
 import NewTaskForm from "./new-task-form";
+import SortToolbar from "./sort-toolbar";
 import TaskRow from "./task-row";
+import { parseSortDir, parseSortKey, sortTasks } from "@/lib/sort";
+import { toTaskView } from "@/lib/task-view";
 
 // `overdue` is computed at request time, so this page must not be cached —
 // otherwise a task crossing its due date wouldn't visibly flip.
 export const dynamic = "force-dynamic";
 
-export default async function TasksPage() {
-  const [tasks, archivedTasks] = await Promise.all([
-    prisma.task.findMany({
-      where: { archived: false },
-      // createdAt breaks ties so equal due dates don't shuffle between loads.
-      orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }],
-    }),
-    prisma.task.findMany({
-      where: { archived: true },
-      orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }],
-    }),
+// searchParams is a Promise in the App Router and has to be awaited.
+type Props = {
+  searchParams: Promise<{ sort?: string; dir?: string }>;
+};
+
+export default async function TasksPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const sort = parseSortKey(params.sort);
+  const dir = parseSortDir(params.dir);
+
+  const [activeTasks, archivedTasks] = await Promise.all([
+    prisma.task.findMany({ where: { archived: false } }),
+    prisma.task.findMany({ where: { archived: true } }),
   ]);
+
+  // Sort first — sortTasks needs createdAt, which TaskView deliberately omits.
+  // See lib/sort.ts for why the ordering happens here rather than in `orderBy`.
+  // Then map to plain objects before they cross into Client Components.
+  const tasks = sortTasks(activeTasks, sort, dir).map(toTaskView);
+  const archived = sortTasks(archivedTasks, sort, dir).map(toTaskView);
 
   const overdueCount = tasks.filter((task) => task.overdue).length;
 
@@ -40,28 +51,7 @@ export default async function TasksPage() {
 
       <NewTaskForm />
 
-      {/* ============ SORT TOOLBAR (not wired up yet) ============ */}
-
-      <div className="toolbar">
-        <label htmlFor="sort-by">Sort by</label>
-        <select id="sort-by" defaultValue="dueDate" disabled>
-          <option value="dueDate">Due date</option>
-          <option value="topic">Topic</option>
-          <option value="status">Status</option>
-        </select>
-
-        <select id="sort-dir" aria-label="Sort direction" defaultValue="asc" disabled>
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
-
-        <span className="spacer" />
-
-        <label className="toggle">
-          <input type="checkbox" id="overdue-only" disabled />
-          Overdue only
-        </label>
-      </div>
+      <SortToolbar sort={sort} dir={dir} />
 
       {/* ============ ACTIVE TASKS ============ */}
 
@@ -77,11 +67,11 @@ export default async function TasksPage() {
 
       {/* ============ ARCHIVED ============ */}
 
-      {archivedTasks.length > 0 && (
+      {archived.length > 0 && (
         <details className="archived">
-          <summary>Archived · {archivedTasks.length}</summary>
+          <summary>Archived · {archived.length}</summary>
           <div className="task-list">
-            {archivedTasks.map((task) => (
+            {archived.map((task) => (
               <TaskRow key={task.id} task={task} />
             ))}
           </div>

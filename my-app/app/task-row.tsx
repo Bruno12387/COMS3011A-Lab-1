@@ -9,17 +9,7 @@ import { useState, useTransition } from "react";
 import InlineEdit from "./inline-edit";
 import { updateTaskField } from "./actions";
 import { formatDate, toDateInputValue } from "@/lib/format";
-
-export type TaskView = {
-  id: number;
-  title: string;
-  description: string | null;
-  dueDate: Date;
-  topic: string;
-  status: "TODO" | "IN_PROGRESS" | "COMPLETE";
-  archived: boolean;
-  overdue: boolean;
-};
+import type { TaskView } from "@/lib/task-view";
 
 const STATUS_LABEL = {
   TODO: "Todo",
