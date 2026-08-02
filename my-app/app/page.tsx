@@ -2,8 +2,9 @@
 //
 // Server Component. Reads straight from Prisma — no fetch, no API route.
 //
-// Implemented: creating tasks, listing them, editing every field, sorting.
-// Still inert: the archive buttons and the "Overdue only" filter.
+// Implemented: creating tasks, listing them, editing every field, sorting,
+// archiving and unarchiving.
+// Still inert: the "Overdue only" filter.
 
 import { prisma } from "@/lib/prisma";
 import NewTaskForm from "./new-task-form";

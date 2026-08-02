@@ -7,7 +7,7 @@
 
 import { useState, useTransition } from "react";
 import InlineEdit from "./inline-edit";
-import { updateTaskField } from "./actions";
+import { setTaskArchived, updateTaskField } from "./actions";
 import { formatDate, toDateInputValue } from "@/lib/format";
 import type { TaskView } from "@/lib/task-view";
 
@@ -51,9 +51,39 @@ function StatusSelect({ task }: { task: TaskView }) {
   );
 }
 
+function ArchiveButton({ task }: { task: TaskView }) {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <>
+      <button
+        type="button"
+        className="btn-archive"
+        disabled={isPending}
+        aria-label={`${task.archived ? "Unarchive" : "Archive"} ${task.title}`}
+        onClick={() => {
+          startTransition(async () => {
+            const result = await setTaskArchived(task.id, !task.archived);
+            setError(result.ok ? null : result.error);
+          });
+        }}
+      >
+        {isPending ? "Saving…" : task.archived ? "Unarchive" : "Archive"}
+      </button>
+      {error && <span className="inline-edit-error">{error}</span>}
+    </>
+  );
+}
+
 export default function TaskRow({ task }: { task: TaskView }) {
+  // Archived tasks are out of the active workflow, so the red urgency styling
+  // would just be noise. Drop the `&& !task.archived` on both lines below if
+  // you'd rather see overdue archived tasks flagged.
+  const showOverdue = task.overdue && !task.archived;
+
   const classes = ["task"];
-  if (task.overdue) classes.push("is-overdue");
+  if (showOverdue) classes.push("is-overdue");
   if (task.archived) classes.push("is-archived");
 
   return (
@@ -84,7 +114,7 @@ export default function TaskRow({ task }: { task: TaskView }) {
         </div>
 
         <div className="task-meta">
-          {task.overdue && <span className="badge-overdue">Overdue</span>}
+          {showOverdue && <span className="badge-overdue">Overdue</span>}
 
           <span className="chip chip-due">
             Due{" "}
@@ -113,10 +143,7 @@ export default function TaskRow({ task }: { task: TaskView }) {
 
       <div className="task-side">
         <StatusSelect task={task} />
-        {/* Not wired up yet. */}
-        <button type="button" className="btn-archive" disabled>
-          {task.archived ? "Unarchive" : "Archive"}
-        </button>
+        <ArchiveButton task={task} />
       </div>
     </article>
   );
