@@ -6,7 +6,7 @@
  *
  * Already imported by app/layout.tsx — no extra wiring needed.
  */
- 
+
 :root {
   --bg: #f6f7f9;
   --surface: #ffffff;
@@ -16,26 +16,26 @@
   --text-muted: #6b7280;
   --accent: #2f6feb;
   --accent-soft: #eaf1fe;
- 
+
   --overdue: #c0392b;
   --overdue-bg: #fdf2f1;
   --overdue-border: #f0c2bc;
- 
+
   --todo-bg: #eef0f3;
   --todo-fg: #4b5563;
   --progress-bg: #fff4e0;
   --progress-fg: #9a6206;
   --complete-bg: #e8f6ed;
   --complete-fg: #1f7a41;
- 
+
   --radius: 10px;
   --radius-sm: 6px;
 }
- 
+
 * {
   box-sizing: border-box;
 }
- 
+
 body {
   margin: 0;
   padding: 32px 20px 80px;
@@ -43,14 +43,14 @@ body {
   color: var(--text);
   font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
- 
+
 .page {
   max-width: 860px;
   margin: 0 auto;
 }
- 
+
 /* ---------- header ---------- */
- 
+
 .page-head {
   display: flex;
   align-items: baseline;
@@ -58,18 +58,18 @@ body {
   gap: 16px;
   margin-bottom: 24px;
 }
- 
+
 h1 {
   font-size: 26px;
   margin: 0;
   letter-spacing: -0.01em;
 }
- 
+
 .count {
   color: var(--text-muted);
   font-size: 14px;
 }
- 
+
 h2 {
   font-size: 13px;
   text-transform: uppercase;
@@ -78,9 +78,9 @@ h2 {
   margin: 0 0 12px;
   font-weight: 600;
 }
- 
+
 /* ---------- panels ---------- */
- 
+
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -88,31 +88,31 @@ h2 {
   padding: 20px;
   margin-bottom: 28px;
 }
- 
+
 /* ---------- create form ---------- */
- 
+
 .create-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 12px;
 }
- 
+
 .field {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
- 
+
 .field.wide {
   grid-column: 1 / -1;
 }
- 
+
 label {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
 }
- 
+
 input[type="text"],
 input[type="date"],
 textarea,
@@ -125,12 +125,12 @@ select {
   background: var(--surface);
   width: 100%;
 }
- 
+
 textarea {
   resize: vertical;
   min-height: 60px;
 }
- 
+
 input:focus,
 textarea:focus,
 select:focus {
@@ -138,14 +138,14 @@ select:focus {
   outline-offset: -1px;
   border-color: var(--accent);
 }
- 
+
 .form-actions {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-top: 14px;
 }
- 
+
 .btn {
   font: inherit;
   font-weight: 500;
@@ -156,28 +156,28 @@ select:focus {
   color: var(--text);
   cursor: pointer;
 }
- 
+
 .btn:hover {
   background: #f0f2f5;
 }
- 
+
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
 }
- 
+
 .btn-primary:hover {
   background: #2560d4;
 }
- 
+
 .hint {
   font-size: 12px;
   color: var(--text-muted);
 }
- 
+
 /* ---------- sort toolbar ---------- */
- 
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -185,21 +185,21 @@ select:focus {
   flex-wrap: wrap;
   margin-bottom: 14px;
 }
- 
+
 .toolbar label {
   font-size: 13px;
   font-weight: 500;
 }
- 
+
 .toolbar select {
   width: auto;
   padding: 6px 10px;
 }
- 
+
 .toolbar .spacer {
   flex: 1;
 }
- 
+
 .toggle {
   display: flex;
   align-items: center;
@@ -207,15 +207,15 @@ select:focus {
   font-size: 13px;
   color: var(--text-muted);
 }
- 
+
 /* ---------- task rows ---------- */
- 
+
 .task-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
- 
+
 .task {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -226,30 +226,30 @@ select:focus {
   grid-template-columns: 1fr auto;
   gap: 4px 16px;
 }
- 
+
 .task.is-overdue {
   background: var(--overdue-bg);
   border-color: var(--overdue-border);
   border-left-color: var(--overdue);
 }
- 
+
 .task-main {
   min-width: 0;
 }
- 
+
 .task-title {
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 3px;
   display: inline-block;
 }
- 
+
 .task-desc {
   color: var(--text-muted);
   font-size: 14px;
   margin: 0 0 10px;
 }
- 
+
 .task-meta {
   display: flex;
   align-items: center;
@@ -257,7 +257,7 @@ select:focus {
   flex-wrap: wrap;
   font-size: 13px;
 }
- 
+
 .task-side {
   display: flex;
   flex-direction: column;
@@ -265,34 +265,104 @@ select:focus {
   justify-content: space-between;
   gap: 10px;
 }
- 
-/* ---------- click-to-edit affordance ---------- */
- 
-[contenteditable] {
+
+/* ---------- click-to-edit ---------- */
+
+/* Read mode. It's a <button>, so most of this is undoing button styling. */
+.inline-edit {
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  background: none;
+  border: none;
+  cursor: text;
   border-radius: 4px;
   padding: 1px 4px;
   margin: -1px -4px;
-  cursor: text;
+  max-width: 100%;
 }
- 
-[contenteditable]:hover {
+
+/* Chips bring their own padding; don't pull them out of alignment. */
+.chip.inline-edit {
+  margin: 0;
+}
+
+.inline-edit:hover {
   background: #eef0f3;
   box-shadow: inset 0 0 0 1px var(--border-strong);
 }
- 
-.is-overdue [contenteditable]:hover {
+
+.is-overdue .inline-edit:hover {
   background: #f8e6e3;
   box-shadow: inset 0 0 0 1px var(--overdue-border);
 }
- 
-[contenteditable]:focus {
-  outline: none;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 2px var(--accent);
+
+.chip-topic.inline-edit:hover {
+  background: #dbe7fd;
+  box-shadow: inset 0 0 0 1px #b9cdf2;
 }
- 
+
+/* Keyboard users get a visible ring; mouse users don't. */
+.inline-edit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Edit mode. */
+.inline-edit-input {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: none;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  padding: 1px 4px;
+  margin: -1px -4px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.chip.inline-edit-input {
+  margin: 0;
+  width: auto;
+}
+
+.inline-edit-input:focus {
+  outline: none;
+}
+
+.inline-edit-input:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+textarea.inline-edit-input {
+  display: block;
+  resize: vertical;
+}
+
+.inline-edit-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--overdue);
+}
+
+/* Shown in place of an empty description. */
+.placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.status-select:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 /* ---------- chips and badges ---------- */
- 
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -303,23 +373,23 @@ select:focus {
   font-weight: 500;
   white-space: nowrap;
 }
- 
+
 .chip-topic {
   background: var(--accent-soft);
   color: #1e4fa8;
 }
- 
+
 .chip-due {
   background: #f0f2f5;
   color: var(--text-muted);
 }
- 
+
 .is-overdue .chip-due {
   background: #f8e6e3;
   color: var(--overdue);
   font-weight: 600;
 }
- 
+
 .badge-overdue {
   background: var(--overdue);
   color: #fff;
@@ -330,7 +400,7 @@ select:focus {
   padding: 3px 8px;
   border-radius: 4px;
 }
- 
+
 /* status select styled to look like a chip */
 .status-select {
   font-size: 12px;
@@ -345,22 +415,22 @@ select:focus {
   background-repeat: no-repeat;
   background-position: right 9px center;
 }
- 
+
 .status-todo {
   background-color: var(--todo-bg);
   color: var(--todo-fg);
 }
- 
+
 .status-progress {
   background-color: var(--progress-bg);
   color: var(--progress-fg);
 }
- 
+
 .status-complete {
   background-color: var(--complete-bg);
   color: var(--complete-fg);
 }
- 
+
 .btn-archive {
   font: inherit;
   font-size: 13px;
@@ -371,20 +441,20 @@ select:focus {
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
- 
+
 .btn-archive:hover {
   background: #f0f2f5;
   color: var(--text);
 }
- 
+
 /* ---------- archived section ---------- */
- 
+
 details.archived {
   margin-top: 32px;
   border-top: 1px solid var(--border);
   padding-top: 20px;
 }
- 
+
 details.archived summary {
   cursor: pointer;
   font-size: 13px;
@@ -397,47 +467,47 @@ details.archived summary {
   align-items: center;
   gap: 8px;
 }
- 
+
 details.archived summary::-webkit-details-marker {
   display: none;
 }
- 
+
 details.archived summary::before {
   content: "▸";
   font-size: 11px;
   transition: transform 0.15s;
 }
- 
+
 details.archived[open] summary::before {
   transform: rotate(90deg);
 }
- 
+
 details.archived .task-list {
   margin-top: 14px;
 }
- 
+
 .task.is-archived {
   opacity: 0.65;
   background: #fafbfc;
   border-left-color: var(--border);
 }
- 
+
 .task.is-archived .task-title {
   text-decoration: none;
   color: var(--text-muted);
 }
- 
+
 /* ---------- empty state ---------- */
- 
+
 .empty {
   text-align: center;
   color: var(--text-muted);
   padding: 32px;
   font-size: 14px;
 }
- 
+
 /* ---------- mockup annotation (delete with the banner) ---------- */
- 
+
 .mockup-note {
   background: #fffbe8;
   border: 1px solid #f0e0a8;
@@ -447,16 +517,16 @@ details.archived .task-list {
   color: #6b5a10;
   margin: 0 0 24px;
 }
- 
+
 @media (max-width: 620px) {
   .create-grid {
     grid-template-columns: 1fr;
   }
- 
+
   .task {
     grid-template-columns: 1fr;
   }
- 
+
   .task-side {
     flex-direction: row;
     align-items: center;
@@ -464,15 +534,15 @@ details.archived .task-list {
     margin-top: 12px;
   }
 }
- 
+
 /* ---------- form validation ---------- */
- 
+
 .field-error {
   margin: 0;
   font-size: 12px;
   color: var(--overdue);
 }
- 
+
 .form-error {
   margin: 14px 0 0;
   padding: 9px 12px;
@@ -482,25 +552,25 @@ details.archived .task-list {
   color: var(--overdue);
   font-size: 13px;
 }
- 
+
 input[aria-invalid="true"],
 textarea[aria-invalid="true"] {
   border-color: var(--overdue);
 }
- 
+
 input[aria-invalid="true"]:focus,
 textarea[aria-invalid="true"]:focus {
   outline-color: var(--overdue);
 }
- 
+
 /* ---------- status as a read-only chip ---------- */
- 
+
 .chip-status {
   font-weight: 600;
 }
- 
+
 /* ---------- disabled controls (features not yet wired up) ---------- */
- 
+
 .btn:disabled,
 .btn-archive:disabled,
 .toolbar select:disabled,
@@ -508,12 +578,12 @@ textarea[aria-invalid="true"]:focus {
   opacity: 0.5;
   cursor: not-allowed;
 }
- 
+
 .btn:disabled:hover,
 .btn-archive:disabled:hover {
   background: none;
 }
- 
+
 .btn-primary:disabled:hover {
   background: var(--accent);
 }

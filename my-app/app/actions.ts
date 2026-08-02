@@ -1,12 +1,43 @@
+
 // app/actions.ts
 //
-// Server Actions. "use server" marks every export in this file as something the
-// client may call — so only export things that are safe to expose as endpoints.
+// Server Actions. "use server" turns every export in this file into a callable
+// endpoint, so two rules apply:
+//   1. Only async functions may be exported (types are fine — they're erased).
+//   2. Every argument arrives from the client and must be treated as untrusted.
  
 "use server";
  
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+ 
+/* ------------------------------------------------------------------ */
+/* shared helpers                                                      */
+/* ------------------------------------------------------------------ */
+ 
+/**
+ * An <input type="date"> submits "YYYY-MM-DD" with no time and no timezone.
+ * Passing that to `new Date()` parses it as UTC midnight, which lands on the
+ * previous day for anyone west of Greenwich. Building from the parts is treated
+ * as local time instead, and we push to the last millisecond of the day so a
+ * task due today isn't overdue until today is over.
+ */
+function parseDueDate(value: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+ 
+  const [, year, month, day] = match;
+  const date = new Date(Number(year), Number(month) - 1, Number(day), 23, 59, 59, 999);
+ 
+  // Catches impossible dates like 2026-02-31, which JS silently rolls over.
+  if (date.getMonth() !== Number(month) - 1) return null;
+ 
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+ 
+/* ------------------------------------------------------------------ */
+/* create                                                              */
+/* ------------------------------------------------------------------ */
  
 export type CreateTaskState = {
   errors?: {
@@ -25,28 +56,6 @@ export type CreateTaskState = {
   success?: boolean;
 };
  
-/**
- * An <input type="date"> submits "YYYY-MM-DD" with no time and no timezone.
- * Passing that straight to `new Date()` parses it as UTC midnight, which lands
- * on the previous day for anyone west of Greenwich.
- *
- * We build the date from its parts instead, which the Date constructor treats
- * as local time, and push it to the last millisecond of that day — a task due
- * today shouldn't count as overdue until today is actually over.
- */
-function parseDueDate(value: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
- 
-  const [, year, month, day] = match;
-  const date = new Date(Number(year), Number(month) - 1, Number(day), 23, 59, 59, 999);
- 
-  // Catches impossible dates like 2026-02-31, which JS would silently roll over.
-  if (date.getMonth() !== Number(month) - 1) return null;
- 
-  return Number.isNaN(date.getTime()) ? null : date;
-}
- 
 export async function createTask(
   _prevState: CreateTaskState,
   formData: FormData,
@@ -59,9 +68,6 @@ export async function createTask(
   const values = { title, description, dueDate: dueDateRaw, topic };
   const errors: NonNullable<CreateTaskState["errors"]> = {};
  
-  // Validate on the server even though the inputs are marked `required`.
-  // Client-side validation is a convenience, not a guarantee — a Server Action
-  // is a real endpoint and can be called with anything.
   if (!title) {
     errors.title = "Title is required.";
   } else if (title.length > 200) {
@@ -93,7 +99,7 @@ export async function createTask(
         description: description || null,
         dueDate: dueDate!,
         topic,
-        // status defaults to TODO and archived defaults to false, per the schema.
+        // status defaults to TODO, archived to false, per the schema.
       },
     });
   } catch (error) {
@@ -101,8 +107,90 @@ export async function createTask(
     return { errors: { form: "Could not save the task. Please try again." }, values };
   }
  
-  // Throw away the cached render of "/" so the new task appears.
   revalidatePath("/");
- 
   return { success: true };
+}
+ 
+/* ------------------------------------------------------------------ */
+/* update                                                              */
+/* ------------------------------------------------------------------ */
+ 
+// The allowlist is the security boundary. `field` arrives from the browser, so
+// without this a caller could pass "archived" or "id" and write whatever they
+// liked. Never build a Prisma `data` object from an unchecked client string.
+const EDITABLE_FIELDS = ["title", "description", "topic", "dueDate", "status"] as const;
+ 
+export type EditableField = (typeof EDITABLE_FIELDS)[number];
+ 
+const STATUSES = ["TODO", "IN_PROGRESS", "COMPLETE"] as const;
+ 
+export type UpdateResult = { ok: true } | { ok: false; error: string };
+ 
+export async function updateTaskField(
+  id: number,
+  field: EditableField,
+  rawValue: string,
+): Promise<UpdateResult> {
+  if (!Number.isInteger(id) || id <= 0) {
+    return { ok: false, error: "Invalid task." };
+  }
+ 
+  if (!EDITABLE_FIELDS.includes(field)) {
+    return { ok: false, error: "That field can't be edited." };
+  }
+ 
+  const value = rawValue.trim();
+  let data: Record<string, unknown>;
+ 
+  switch (field) {
+    case "title": {
+      if (!value) return { ok: false, error: "Title can't be empty." };
+      if (value.length > 200) return { ok: false, error: "Keep it under 200 characters." };
+      data = { title: value };
+      break;
+    }
+ 
+    case "description": {
+      // Empty is allowed here — clearing the description sets it back to null.
+      if (value.length > 2000) return { ok: false, error: "Keep it under 2000 characters." };
+      data = { description: value || null };
+      break;
+    }
+ 
+    case "topic": {
+      if (!value) return { ok: false, error: "Topic can't be empty." };
+      if (value.length > 60) return { ok: false, error: "Keep it under 60 characters." };
+      data = { topic: value };
+      break;
+    }
+ 
+    case "dueDate": {
+      const parsed = parseDueDate(value);
+      if (!parsed) return { ok: false, error: "That date isn't valid." };
+      data = { dueDate: parsed };
+      break;
+    }
+ 
+    case "status": {
+      if (!STATUSES.includes(value as (typeof STATUSES)[number])) {
+        return { ok: false, error: "Unknown status." };
+      }
+      data = { status: value };
+      break;
+    }
+  }
+ 
+  try {
+    await prisma.task.update({ where: { id }, data });
+  } catch (error) {
+    // P2025 is Prisma's "record to update not found".
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2025") {
+      return { ok: false, error: "That task no longer exists." };
+    }
+    console.error("updateTaskField failed:", error);
+    return { ok: false, error: "Could not save. Please try again." };
+  }
+ 
+  revalidatePath("/");
+  return { ok: true };
 }

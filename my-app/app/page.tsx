@@ -2,72 +2,16 @@
 //
 // Server Component. Reads straight from Prisma — no fetch, no API route.
 //
-// Implemented so far: creating a task, and listing tasks.
-// Still inert: the sort controls, click-to-edit, and the archive buttons.
+// Implemented: creating tasks, listing them, editing every field.
+// Still inert: the sort controls and the archive buttons.
 
 import { prisma } from "@/lib/prisma";
 import NewTaskForm from "./new-task-form";
+import TaskRow from "./task-row";
 
 // `overdue` is computed at request time, so this page must not be cached —
-// otherwise a task crossing its due date wouldn't visibly flip until a redeploy.
+// otherwise a task crossing its due date wouldn't visibly flip.
 export const dynamic = "force-dynamic";
-
-// Picks up the `overdue` field added by the client extension in lib/prisma.ts.
-type Task = Awaited<ReturnType<typeof prisma.task.findMany>>[number];
-
-const STATUS_LABEL = {
-  TODO: "Todo",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-} as const;
-
-const STATUS_CLASS = {
-  TODO: "status-todo",
-  IN_PROGRESS: "status-progress",
-  COMPLETE: "status-complete",
-} as const;
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function TaskRow({ task }: { task: Task }) {
-  const classes = ["task"];
-  if (task.overdue) classes.push("is-overdue");
-  if (task.archived) classes.push("is-archived");
-
-  return (
-    <article className={classes.join(" ")}>
-      <div className="task-main">
-        <h3 className="task-title">{task.title}</h3>
-
-        {task.description && <p className="task-desc">{task.description}</p>}
-
-        <div className="task-meta">
-          {task.overdue && <span className="badge-overdue">Overdue</span>}
-          <span className="chip chip-due">
-            Due <time dateTime={task.dueDate.toISOString()}>{formatDate(task.dueDate)}</time>
-          </span>
-          <span className="chip chip-topic">{task.topic}</span>
-        </div>
-      </div>
-
-      <div className="task-side">
-        <span className={`chip chip-status ${STATUS_CLASS[task.status]}`}>
-          {STATUS_LABEL[task.status]}
-        </span>
-        {/* Not wired up yet — disabled so it doesn't look clickable. */}
-        <button type="button" className="btn-archive" disabled>
-          {task.archived ? "Unarchive" : "Archive"}
-        </button>
-      </div>
-    </article>
-  );
-}
 
 export default async function TasksPage() {
   const [tasks, archivedTasks] = await Promise.all([
